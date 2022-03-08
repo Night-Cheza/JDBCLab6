@@ -22,7 +22,7 @@ public class UserDB {
 
 		try {
 			ps = con.prepareStatement(sql);
-			rs = ps.executeQuery(sql);
+			rs = ps.executeQuery();
 			while (rs.next()) {
 				String email = rs.getString(1);
 				boolean active = rs.getBoolean(2);
