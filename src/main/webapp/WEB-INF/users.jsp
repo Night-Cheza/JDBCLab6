@@ -12,10 +12,20 @@
 	</head>
 	
 	<body style="background-color: #eefbf0;">
-		<h1 style="text-align: center; margin: 3% 5% 1% 5%;"><b>User's Management System</b></h1>
-		<p style="text-align: center; margin: 3% 5% 1% 5%;" name="message">${message}</p>
+		<div style="text-align: center; margin: 3% 5% 1% 5%;">
+			<h1><b>User's Management System</b></h1>
+		</div>
 		
-		<div class="container" style="display: flex; justify-content: center; margin:.5vh 5vw 5vh 5vw;">
+		<div style="height:5vh; width: 100%; position:absolute; text-align: center;  margin-top: 2%;">
+			<p  style="color: red;" name="message">
+				<b>${message}</b>
+			</p>	
+			<p  style="color: red;" name="message">
+				<b>${message2}</b>
+			</p>	
+		</div>
+		
+		<div class="container" style="display: flex; justify-content: center; margin: 10vh 5vw 5vh 5vw;">
 			<table class="table" style="margin:1% 1% 3% 1%; width:100%;">
 				<thead>
 					<tr>
@@ -57,23 +67,23 @@
 				<tbody>
 					<c:forEach var="user" items="${users}">
 						<tr class="table-info" scope="row">
-							<td name="email" value="${user.email}">
+							<td name="email">
 								${user.email}
 							</td>
 
-							<td name="firstName" value="${user.firstName}">
+							<td name="firstName">
 								${user.firstName}
 							</td>
 
-							<td name = "lastName" value="${user.lastName}">
+							<td name = "lastName">
 								${user.lastName}
 							</td>
 							
-							<td name="roleName" value="{user.getRole().getRoleName()}">
+							<td name="roleName">
 								${user.getRole().getRoleName()}
 							</td>
 							
-							<td name="active" value="${user.active}">
+							<td name="active">
 								${user.active}
 							</td>
 							
@@ -87,7 +97,7 @@
 							<td>
 								<form action="user" method="post">
 									<input type="hidden" name="action" value="delete">
-									<button type="submit" style="background-color: rgba(255,255,255,0.0); border-style: none;"  value="${user.email}" name="deleteBtn"><span class="glyphicon glyphicon-trash" style="color:red"></span></button>	
+									<button style="background-color: rgba(255,255,255,0.0); border-style: none;"  value="${user.email}" name="deleteBtn"><span class="glyphicon glyphicon-trash" style="color:red"></span></button>	
 								</form>
 							</td>
 						</tr>
@@ -98,7 +108,7 @@
 			<form action="user" method="post" style="margin:1% 1% 3% 1%; width:25%">
 				<input type="hidden" name="action" value="add">
 				
-				<table class="table" style="height:100%";>
+				<table class="table" style="height:32vh;">
 					<thead>
 						<tr style="text-align: center; font-size: large;">
 							<th>
@@ -154,7 +164,7 @@
 			
 			<form action="user" method="post" value="${user}" style=" margin:1% 1% 3% 1%; width:25%;">
 				<input type="hidden" name="action" value="update">				
-				<table class="table" style="height:100%;">
+				<table class="table" style="height:33vh;">
 					<thead>
 						<tr style="text-align: center; font-size: large;">
 							<th>

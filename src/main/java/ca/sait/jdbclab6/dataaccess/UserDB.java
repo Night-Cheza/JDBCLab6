@@ -30,7 +30,7 @@ public class UserDB {
 				String lastName = rs.getString(4);
 				String password = rs.getString(5);
 				int roleID = rs.getInt(6);
-				String roleName = rs.getString(7);
+				String roleName = rs.getString(8);
 
 				Role role = new Role(roleID, roleName);
 				User user = new User(email, active, firstName, lastName, password, role);
@@ -64,7 +64,7 @@ public class UserDB {
 				String lastName = rs.getString(4);
 				String password = rs.getString(5);
 				int roleID = rs.getInt(6);
-				String roleName = rs.getNString(7);
+				String roleName = rs.getString(8);
 
 				Role role = new Role(roleID, roleName);
 				user = new User(email, active, firstName, lastName, password, role);
@@ -82,7 +82,7 @@ public class UserDB {
 		ConnectionPool cp = ConnectionPool.getInstance();
 		Connection con = cp.getConnection();
 		PreparedStatement ps = null;
-		String sql = "INSERT INTO user (email, active, firstName, lastName, password, role) VALUES (?, ?, ?, ?, ?, ?)";
+		String sql = "INSERT INTO user (email, active, first_name, last_name, password, role) VALUES (?, ?, ?, ?, ?, ?)";
 
 		boolean inserted = false;
 
@@ -107,18 +107,18 @@ public class UserDB {
 		ConnectionPool cp = ConnectionPool.getInstance();
 		Connection con = cp.getConnection();
 		PreparedStatement ps = null;
-		String sql = "UPDATE user SET active = ?, firstName = ?, lastName = ?, password = ?, role = ? WHERE email = ?";
+		String sql = "UPDATE user SET active = ?, first_name = ?, last_name = ?, password = ?, role = ? WHERE email = ?";
 
 		boolean updated = false;
 
 		try {
 			ps = con.prepareStatement(sql);
-			ps.setBoolean(2, user.isActive());
-			ps.setString(3, user.getFirstName());
-			ps.setString(4, user.getLastName());
-			ps.setString(5, user.getPassword());
-			ps.setInt(6, user.getRole().getId());
-			ps.setString(1, user.getEmail());
+			ps.setBoolean(1, user.isActive());
+			ps.setString(2, user.getFirstName());
+			ps.setString(3, user.getLastName());
+			ps.setString(4, user.getPassword());
+			ps.setInt(5, user.getRole().getId());
+			ps.setString(6, user.getEmail());
 			updated = ps.executeUpdate() != 0;
 		} finally {
 			DBUtil.closePreparedStatement(ps);

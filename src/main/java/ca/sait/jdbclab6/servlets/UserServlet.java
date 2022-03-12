@@ -1,5 +1,6 @@
 package ca.sait.jdbclab6.servlets;
 
+import ca.sait.jdbclab6.models.Role;
 import ca.sait.jdbclab6.models.User;
 import ca.sait.jdbclab6.services.UserService;
 import java.io.IOException;
@@ -33,15 +34,11 @@ public class UserServlet extends HttpServlet {
 
 			request.setAttribute("users", users);
 
-			this.getServletContext().getRequestDispatcher("/WEB-INF/users.jsp").forward(request, response);
+			getServletContext().getRequestDispatcher("/WEB-INF/users.jsp").forward(request, response);
 		} catch(Exception e) {
 			Logger.getLogger(UserServlet.class.getName()).log(Level.SEVERE, null, e);
-		}
-
-		
+		}	
 	}
-//	private static final Logger LOG = Logger.getLogger(UserServlet.class.getName());
-
 	/**
 	 * Handles the HTTP <code>POST</code> method.
 	 *
@@ -53,5 +50,132 @@ public class UserServlet extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
+		UserService uService = new UserService();
+
+		try {
+			List<User> users = uService.getAll();
+
+			request.setAttribute("users", users);
+		} catch(Exception e) {
+			Logger.getLogger(UserServlet.class.getName()).log(Level.SEVERE, null, e);
+		}
+
+		String action = request.getParameter("action");	
+
+		String email;
+		String firstName;
+		String lastName;
+		String password;
+		String roleName;
+		int roleID;
+		boolean active = false;
+//		boolean delete = false;
+
+		if(action != null && action.equals("add")) {
+			email = request.getParameter("addEmail");
+			firstName = request.getParameter("addFName");
+			lastName = request.getParameter("addLName");
+			password = request.getParameter("addPassword");
+			roleName = request.getParameter("addRole");
+			active = true;
+
+			if(roleName.contains("sys")) {
+				roleID = 1;
+			} else
+				if(roleName.contains("user")) {
+					roleID = 2;
+				} else {
+					roleID = 3;
+				}
+
+			Role role = new Role(roleID, roleName);
+
+			if(!email.isEmpty()) {
+				try {
+					uService.insert(email, active, firstName, lastName, password, role);
+
+				request.setAttribute("message", "Record has been added");
+				} catch(Exception e) {
+					Logger.getLogger(UserServlet.class.getName()).log(Level.SEVERE, null, e);
+				}	
+			}	
+		} else
+			if(action != null && action.equals("edit")) {
+				String button = request.getParameter("editBtn");
+				User user = new User();
+
+				try {
+					user = uService.get(button);
+
+					request.setAttribute("user", user);
+					request.setAttribute("editEmail", user.getEmail());
+					request.setAttribute("editFName", user.getFirstName());
+					request.setAttribute("editLName", user.getLastName());
+					request.setAttribute("editPassword", user.getPassword());
+					request.setAttribute("editRole", user.getRole().getRoleName());
+					request.setAttribute("editActive", "true");
+				} catch(Exception e) {
+					Logger.getLogger(UserServlet.class.getName()).log(Level.SEVERE, null, e);
+				}
+
+			} else 
+				if(action != null && action.equals("update")){
+					String button = request.getParameter("btn");
+
+					if(button.contentEquals("save")) {
+						String newEmail = request.getParameter("editEmail");
+						String newFName = request.getParameter("editFName");
+						String newLName = request.getParameter("editLName");
+						String newPassword = request.getParameter("editPassword");
+						String newRole = request.getParameter("editRole");
+
+						if(newRole.contains("sys")) {
+							roleID = 1;
+						} else
+							if(newRole.contains("user")) {
+								roleID = 2;
+							} else {
+								roleID = 3;
+							}
+
+						String newActive = request.getParameter("editActive");
+
+						if(newActive.equals("true")) {
+							active = true;
+						}
+
+						Role role = new Role(roleID, newRole);
+
+						try {
+							uService.update(newEmail, active, newFName, newLName, newPassword, role);
+
+							request.setAttribute("message", "Record has been updated");
+						} catch(Exception e) {
+							Logger.getLogger(UserServlet.class.getName()).log(Level.SEVERE, null, e);
+						}	
+					} else {
+					}
+				} else {
+					String button = request.getParameter("deleteBtn");
+//					User user = new User();
+
+					try {
+						uService.delete(button);
+
+						request.setAttribute("message", "Record has been deleted");
+					} catch(Exception e) {
+						Logger.getLogger(UserServlet.class.getName()).log(Level.SEVERE, null, e);
+					}
+				}
+
+		try {
+			List<User> users = uService.getAll();
+
+			request.setAttribute("users", users);
+
+			getServletContext().getRequestDispatcher("/WEB-INF/users.jsp").forward(request, response);
+		} catch(Exception e) {
+			Logger.getLogger(UserServlet.class.getName()).log(Level.SEVERE, null, e);
+		}		
 	}
 }
